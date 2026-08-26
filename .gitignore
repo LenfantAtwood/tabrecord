@@ -1,0 +1,41 @@
+# JavaScript / TypeScript
+node_modules/
+.pnpm-store/
+dist/
+coverage/
+
+# Python
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+*.py[cod]
+
+# Models and datasets
+data/
+datasets/
+checkpoints/
+weights/
+artifacts/
+*.onnx
+*.tflite
+*.pt
+*.pth
+*.ckpt
+
+# Captured media and generated sessions
+recordings/
+sessions/
+*.wav
+*.flac
+*.mp3
+*.mp4
+*.mov
+
+# Local tools
+.DS_Store
+.env
+.env.*
+!.env.example
+.idea/
+.vscode/

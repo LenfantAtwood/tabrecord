@@ -1,0 +1,40 @@
+name: 技术 Spike / 实验
+description: 用固定时限回答一个不确定问题
+title: "[Spike] "
+labels: ["spike"]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: 要回答的问题
+    validations:
+      required: true
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: 假设与基线
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: 数据、设备、方法与指标
+    validations:
+      required: true
+  - type: input
+    id: timebox
+    attributes:
+      label: Timebox
+      placeholder: 例如 2 天
+    validations:
+      required: true
+  - type: textarea
+    id: decision
+    attributes:
+      label: Go / No-go 条件
+    validations:
+      required: true
+  - type: textarea
+    id: compliance
+    attributes:
+      label: 数据来源、隐私和许可证

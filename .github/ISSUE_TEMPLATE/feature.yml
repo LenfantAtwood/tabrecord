@@ -1,0 +1,36 @@
+name: 功能切片
+description: 可由用户观察和验收的纵向功能
+title: "[Feature] "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 用户问题
+      description: 谁在什么场景遇到什么问题？
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 范围与非目标
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 验收条件
+      description: 使用可测量的 Given/When/Then 或检查项。
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: 依赖、隐私、许可证与性能风险
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 优先级
+      options: [P0, P1, P2, P3]
+    validations:
+      required: true

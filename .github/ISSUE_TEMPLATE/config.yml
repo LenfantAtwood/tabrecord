@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 项目需求与架构
+    url: https://github.com/LenfantAtwood/tabrecord/tree/main/docs
+    about: 提交前请先确认需求、架构和现有 backlog。
