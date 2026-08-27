@@ -8,20 +8,20 @@
 
 | 里程碑 | 目标 | Exit criteria |
 | --- | --- | --- |
-| M0 可行性 | 证明 GP 往返、实时窗口和弦品解码可行 | 三份 spike 报告、固定 fixtures、go/no-go 决策 |
-| M1 垂直切片 | 麦克风到暂定 TAB，再导出 MIDI/GP7 | 30 秒端到端演示，带延迟与恢复证据 |
+| M0 可行性 | 证明 GP8 输入、实时窗口和弦品解码可行 | 三份 spike 报告、固定 fixtures、go/no-go 决策 |
+| M1 垂直切片 | GP8/麦克风输入到可编辑 TAB，再导出 MIDI | 30 秒端到端演示，带延迟与恢复证据 |
 | M2 MVP | 可实际完成录制、纠错、回放与导出 | PRD 的 0.1 验收和 10 人可用性测试 |
 | M3 手势 Beta | 可选摄像头先验有稳定净收益 | 达到多模态 go 条件且有自动降级 |
 
 ## Epic 0 — 范围、许可与基准（P0）
 
 - [ ] **TAB-001 [S]** 确认首发平台、参考设备、最低浏览器和是否允许本地 sidecar。验收：PRD 待确认项有负责人和日期。
-- [ ] **TAB-002 [S]** 建立 3–5 个可再分发的短音频/GP/MIDI fixtures。验收：每个样例有来源、许可证、预期事件和 hash。
+- [ ] **TAB-002 [S]** 建立 3–5 个可再分发的短音频/GP8/MIDI fixtures。验收：每个样例有来源、许可证、预期事件和 hash。
 - [ ] **TAB-003 [M]** 定义评估协议。验收：固定数据切分、容差、note/frame/string/fret 指标和 latency 采样方式。
 - [ ] **TAB-004 [S]** 建立性能参考设备矩阵。验收：至少一台低配和一台主开发机，记录 CPU/浏览器/音频设备。
 - [ ] **TAB-005 [S]** 完成依赖许可证表。验收：alphaTab、Basic Pitch、模型 runtime、数据集和候选 MIDI 库均有结论。
 - [ ] **TAB-006 [S]** 建立媒体隐私与用户同意文案草案。验收：音频/视频保存、上传和诊断默认值明确。
-- [ ] **TAB-007 [S]** 确认 Guitar Pro 样例的版权/分发边界。验收：CI 中只使用自制或许可明确文件。
+- [ ] **TAB-007 [S]** 确认 Guitar Pro 8 样例的版权/分发边界。验收：CI 中只使用自制或许可明确文件。
 - [ ] **TAB-008 [XS]** 由仓库所有者选择 TabRecord 许可证。验收：根目录 LICENSE 与 README 一致。
 
 ## Epic 1 — 仓库与契约基础（P0）
@@ -35,16 +35,16 @@
 - [ ] **TAB-107 [S]** 实现会话 manifest 与 v0→未来版本迁移测试框架。
 - [ ] **TAB-108 [XS]** 创建延迟 trace ID 和统一诊断事件契约。
 
-## Epic 2 — GP、渲染与播放 Spike（P0）
+## Epic 2 — GP8 输入、渲染与播放 Spike（P0）
 
-- [ ] **TAB-201 [M]** 集成 alphaTab 最小页面：载入自制 GP，渲染标准谱/TAB，播放和光标同步。
-- [ ] **TAB-202 [M]** 建立 GP3/4/5、GPX、GP7/8 导入兼容矩阵。
-- [ ] **TAB-203 [M]** 验证 `CanonicalScore → alphaTab.Score → Gp7Exporter → reimport`。
-- [ ] **TAB-204 [S]** 建立 GP7 支持字段的语义 diff，忽略无关 zip/布局差异。
+- [ ] **TAB-201 [M]** 集成 alphaTab 最小页面：载入自制 GP8，渲染标准谱/TAB，播放和光标同步。
+- [ ] **TAB-202 [M]** 建立 GP8 输入字段兼容矩阵；不创建旧格式矩阵。
+- [ ] **TAB-203 [M]** 验证 `GP8 .gp → alphaTab.Score → CanonicalScore → 当前页面`。
+- [ ] **TAB-204 [S]** 建立 GP8 输入字段的语义 diff，忽略无关 zip/布局差异。
 - [ ] **TAB-205 [M]** 测量 1、10、100、500 小节的全量/脏小节重渲染性能。
 - [ ] **TAB-206 [S]** 设计渲染节流：合并 100–250 ms 内的事件更新，保持录制头流畅。
-- [ ] **TAB-207 [S]** 生成导入/导出 compatibility report。
-- [ ] **TAB-208 [S]** 验证 Guitar Pro 7 与 8 能打开 MVP 导出文件。
+- [ ] **TAB-207 [S]** 生成 GP8 输入 compatibility report。
+- [ ] **TAB-208 [M, P1]** 输入模型稳定后实现 `Gp8Writer` spike，并由 Guitar Pro 8 重开验证当前页面快照。
 - [ ] **TAB-209 [S]** 决定 MIDI writer；建立 tempo/拍号/note/pitch bend 黄金测试。
 
 ## Epic 3 — 音频采集与会话时钟（P0）
@@ -105,15 +105,15 @@
 - [ ] **TAB-802 [M]** 音高/弦/品/onset/duration 编辑与键盘操作。
 - [ ] **TAB-803 [S]** undo/redo、锁定字段和人工来源记录。
 - [ ] **TAB-804 [M]** 原音频/MIDI 合成/alphaTab 光标同步，支持 1/2/4 小节循环。
-- [ ] **TAB-805 [S]** 导出 MIDI、GP7、内部会话和 compatibility report。
+- [ ] **TAB-805 [S]** 导出 MIDI、内部会话，以及通过 `TAB-208` 验证后的 GP8 文件和 compatibility report。
 - [ ] **TAB-806 [S]** 导出前校验并阻止不可能弦品、负时值、越界 tick。
-- [ ] **TAB-807 [S]** 导入 GP 后继续增录新轨/新段的交互设计与 spike。
+- [ ] **TAB-807 [S]** 输入 GP8 后继续增录新轨/新段的交互设计与 spike。
 
 ## Epic 9 — 可用性、性能与发布（P1/P2）
 
 - [ ] **TAB-901 [S, P1]** 可访问性检查：键盘、焦点、状态非纯颜色、屏幕阅读标签。
 - [ ] **TAB-902 [M, P1]** 参考设备端到端 p50/p95 trace 仪表盘。
-- [ ] **TAB-903 [S, P1]** 导入 zip bomb、超大文件、损坏 GP 的资源限制和错误提示。
+- [ ] **TAB-903 [S, P1]** 输入 zip bomb、超大文件、损坏 GP8 的资源限制和错误提示。
 - [ ] **TAB-904 [S, P1]** 诊断包脱敏测试。
 - [ ] **TAB-905 [M, P1]** 10 人 MVP 可用性测试及问题分级。
 - [ ] **TAB-906 [S, P1]** 发布说明模板包含指标、兼容性和已知失败模式。

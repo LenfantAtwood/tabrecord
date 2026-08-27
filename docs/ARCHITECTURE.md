@@ -10,6 +10,7 @@
 
 ```mermaid
 flowchart LR
+  GP8IN["GP8 输入"] --> AT["alphaTab GP8 读取 / 渲染"]
   MIC["麦克风"] --> AW["AudioWorklet / 环形缓冲"]
   CAM["摄像头（可选）"] --> GE["手势与指板估计"]
   AW --> FE["预处理 / onset / 模型推理"]
@@ -20,9 +21,10 @@ flowchart LR
   CLOCK["Tempo / beat clock"] --> FU
   FU --> ES["版本化事件存储"]
   ES --> SA["Score assembler"]
-  SA --> AT["alphaTab 适配与渲染"]
+  AT --> ES
+  SA --> AT
   SA --> MIDI["MIDI 导出"]
-  SA --> GP7["GP7 导出"]
+  SA --> GP8OUT["GP8 写回"]
   USER["人工编辑"] --> ES
   ES --> SAVE["IndexedDB / OPFS 会话"]
 ```
@@ -67,15 +69,17 @@ flowchart LR
 4. 按确认线生成稳定快照；
 5. 向渲染器和导出器提供同一规范对象。
 
-### 3.5 alphaTab 适配层
+### 3.5 alphaTab 与 GP8 适配层
 
-alphaTab 负责文件导入、显示、播放和 GP7 导出，但不直接充当编辑历史。适配层需要：
+alphaTab 负责 GP8 输入、显示和播放，但不直接充当编辑历史，也不被视作现成的 GP8 writer。适配层需要：
 
 - `alphaTab.Score ↔ CanonicalScore` 的显式映射；
 - 不支持字段和降级行为报告；
 - 小节级脏标记与节流重渲染；
-- 导入后立即规范化，导出前重新验证；
+- GP8 导入后立即规范化，写回前重新验证；
 - 将 alphaTab 升级限制在独立 PR，并运行全部黄金文件。
+
+GP8 写回由独立 `Gp8Writer` 接口承担。第一垂直切片只要求 GP8 输入；写回必须以 Guitar Pro 8 重新打开和语义比对为验收，不能仅凭扩展名或旧版 exporter 判断兼容。
 
 ## 4. 建议的数据模型
 
@@ -168,18 +172,19 @@ session.tabrecord/
   diagnostics.json
 ```
 
-实现时可打包为 zip，但不要把 GP 或 MIDI 作为恢复会话所需的唯一文件。
+实现时可打包为 zip，但不要把 GP8 或 MIDI 作为恢复会话所需的唯一文件。
 
-### 7.2 Guitar Pro
+### 7.2 Guitar Pro 8
 
-- 导入：通过 alphaTab 覆盖 GP3/4/5、GPX、GP7/8 的受支持子集；
-- 导出：MVP 固定为 GP7 `.gp`，使用 alphaTab `Gp7Exporter`；
-- 旧版 GP3–5 回写：只有明确用户需求时再评估 PyGuitarPro；
-- 每次导出都生成 compatibility report，列出丢失或降级字段。
+- 唯一兼容边界是 GP8 `.gp`；不实现其他 Guitar Pro 版本的独立适配器；
+- 输入是 P0：通过 alphaTab 读取 GP8，并转换为页面模型；
+- 写回在输入模型稳定后实现：从当前页面快照生成 GP8 `.gp`；
+- 每次输入和写回都生成 compatibility report，列出丢失或降级字段；
+- GP8 写回必须由 Guitar Pro 8 重开和语义 diff 验证。
 
 ### 7.3 MIDI
 
-MIDI 只表达演奏事件，不能完整保存吉他弦品、排版和所有技法。导出时应同时允许保存 TabRecord 会话或 GP 文件。
+MIDI 只表达演奏事件，不能完整保存吉他弦品、排版和所有技法。导出时应同时允许保存 TabRecord 会话或 GP8 文件。
 
 ## 8. 安全与隐私
 
@@ -193,7 +198,7 @@ MIDI 只表达演奏事件，不能完整保存吉他弦品、排版和所有技
 
 - **单元测试**：事件合并、量化、弦品候选、修订状态机；
 - **属性测试**：任意合法调弦下，`pitch == open + fret + capo`；
-- **黄金文件**：小型 GP/MIDI 文件导入 → 规范化 → 导出 → 再导入；
+- **黄金文件**：小型 GP8/MIDI 文件输入 → 规范化 → 写回 → 由 GP8 再打开；
 - **离线基准**：固定音频和 JAMS/MIDI/TAB 标注；
 - **实时基准**：虚拟音频设备重放，记录 capture/inference/render 时间戳；
 - **失败注入**：设备断开、模型超时、后台标签页、存储配额不足；

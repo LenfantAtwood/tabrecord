@@ -79,13 +79,13 @@ WIP 建议：每位开发者同时最多 1 个 `In progress`，全团队最多 2
 - 分支含任务号：`feat/TAB-201-live-capture`；
 - 影响公共契约的 PR 必须含 schema 迁移和兼容测试；
 - 依赖升级单独 PR，alphaTab/模型 runtime 升级必须跑完整黄金集；
-- 不提交数据集、原始录音、视频、未授权 GP 文件或大模型权重。
+- 不提交数据集、原始录音、视频、未授权 GP8 文件或大模型权重。
 
 建议检查：
 
 1. format/lint/typecheck；
 2. unit/property tests；
-3. GP/MIDI golden round-trip；
+3. GP8 输入/写回与 MIDI golden tests；
 4. 离线音频 regression；
 5. Web 性能 smoke；
 6. license/SBOM；
@@ -97,12 +97,11 @@ WIP 建议：每位开发者同时最多 1 个 `In progress`，全团队最多 2
 
 - 内部事件模型和存储格式；
 - 推理在浏览器、本地 sidecar 或云端的边界；
-- GP/MIDI/alphaTab 适配策略；
+- GP8/MIDI/alphaTab 适配策略；
 - 模型、数据集或许可证影响商业/分发能力；
 - 会话兼容性或隐私默认值。
 
 ADR 状态：`Proposed → Accepted → Superseded/Rejected`。代码与文档链接到 ADR，不在聊天记录中保留唯一决策。
-
 
 
 
