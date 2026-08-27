@@ -5,17 +5,16 @@
 
 ## 1. 结论摘要
 
-1. 用户提到的 “audioTab” 很可能是 **alphaTab**。它能承担 GP 导入、标准谱/TAB 渲染、播放和 GP7 导出，但它是 SDK，不是完整实时编辑器。
-2. **Basic Pitch** 是很好的音频到 MIDI 离线基线，但当前公开接口以文件/窗口预测为主，实时 streaming 仍是待实现能力；不能把它直接写成“实时模型已就绪”。
-3. 吉他 TAB 的关键不只是音高识别，而是弦品分配。TabCNN、GuitarSet、SynthTab 和 playability-constrained decoding 都值得学习。
-4. 手势先验有直接研究依据：音频给出音高，视觉可帮助消除同音异位。产品上应把视觉作为可降权的软先验，避免遮挡时拖垮音频路径。
-5. GP 写入应先限定到 alphaTab 已公开支持的 GP7 exporter；如果必须回写 GP3–5，再评估 PyGuitarPro。
+1. **Basic Pitch** 是很好的音频到 MIDI 离线基线，但当前公开接口以文件/窗口预测为主，实时 streaming 仍是待实现能力；不能把它直接写成“实时模型已就绪”。
+2. 吉他 TAB 的关键不只是音高识别，而是弦品分配。TabCNN、GuitarSet、SynthTab 和 playability-constrained decoding 都值得学习。
+3. 手势先验有直接研究依据：音频给出音高，视觉可帮助消除同音异位。产品上应把视觉作为可降权的软先验，避免遮挡时拖垮音频路径。
+4. GP 写入应先限定到 alphaTab 已公开支持的 GP7 exporter；如果必须回写 GP3–5，再评估 PyGuitarPro。
 
 ## 2. 项目与资料
 
 | 项目/论文 | 可学习内容 | 与 TabRecord 的关系 | 主要注意点 |
 | --- | --- | --- | --- |
-| [alphaTab](https://github.com/CoderLine/alphaTab) / [格式文档](https://www.alphatab.net/docs/category/formats/) / [导出文档](https://docs.alphatab.net/docs/guides/exporter) | GP3–8 输入、数据模型、SVG/Canvas TAB 渲染、播放；GP7 导出 | 首选渲染和 GP7 适配器 | SDK 而非完整编辑器；MPL-2.0；升级要跑黄金集 |
+| [alphaTab](https://github.com/CoderLine/alphaTab) / [格式文档](https://www.alphatab.net/docs/category/formats/) / [导出文档](https://docs.alphatab.net/docs/guides/exporter) | GP3–8 输入、数据模型、SVG/Canvas TAB 渲染、播放；GP7 导出 | 首选渲染和 GP7 适配器 | SDK 而非完整编辑器；MPL-2.0；升级要跑集 |
 | [Spotify Basic Pitch](https://github.com/spotify/basic-pitch) / [TS 版本](https://github.com/spotify/basic-pitch-ts) | 轻量、复音、instrument-agnostic 音频到 MIDI，支持 pitch bend | 离线基线与浏览器推理候选 | 原生实时输出不是现成功能；窗口边界、延迟和重复事件需自行解决 |
 | [Basic Pitch streaming proposal #171](https://github.com/spotify/basic-pitch/issues/171) | 社区对重叠缓冲、增量 MIDI、低延迟的需求分解 | 说明流式适配是独立工程 | Issue 是提案，不是已发布能力 |
 | [TabCNN 实现](https://github.com/simon-minami/tabcnn) / [原论文](https://archives.ismir.net/ismir2019/paper/000033.pdf) | 直接按每根弦预测 fret class 的吉他专用转录 | 对比通用音高模型 + 后置弦品解码 | 训练域与真实设备差异明显；仍需时值/流式工程 |
@@ -35,7 +34,7 @@
 - 从 1.2.0 起有 `Gp7Exporter`，可把 `Score` 导出为 `.gp` 二进制；
 - alphaTab 明确定位为构建记谱软件的 SDK，而不是开箱即用编辑器。
 
-因此建议：
+建议：
 
 - MVP 的 “GP 读写” 定义为多版本导入 + GP7 导出；
 - TabRecord 维护自己的修订历史和内部乐谱，alphaTab 只位于适配层；
@@ -72,8 +71,6 @@ Go 条件：相对降低至少 10% 弦品错误、p95 额外延迟不超过 250 
 - 用 MIDI 作为唯一内部格式，丢失弦品、来源、置信度和修订；
 - 每个推理窗口直接追加音符，造成边界重复；
 - 在录制头上每帧全量重绘整首谱；
-- 把 Basic Pitch 的离线推理包装成“低延迟实时”而不测 p95；
-- 使用 SynthTab 全量数据却忽略 CC BY-NC；
 - 把模型生成的未确认内容写入最终 GP 后再试图恢复历史。
 
 ## 7. 建议先复现的三个基线
