@@ -1,0 +1,17 @@
+{
+  "name": "tabrecord",
+  "private": true,
+  "version": "0.0.0",
+  "packageManager": "pnpm@11.19.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @tabrecord/web dev",
+    "build": "pnpm --filter @tabrecord/web build",
+    "lint": "pnpm --filter @tabrecord/web lint",
+    "test": "pnpm --filter @tabrecord/web test",
+    "typecheck": "pnpm --filter @tabrecord/web typecheck",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build"
+  }
+}

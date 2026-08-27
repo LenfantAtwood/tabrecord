@@ -1,11 +1,36 @@
-# Web 应用（规划）
+# Web 应用
 
-这里将承载 TabRecord 的 Web/PWA 客户端：
+TabRecord 的浏览器客户端。目前的第一条垂直切片用于验证：
 
-- 音频设备与 AudioWorklet 采集；
-- 可选摄像头与指板校准；
-- Worker 中的转录、事件合并和渲染编排；
-- alphaTab 标准谱/TAB、播放与光标；
-- 人工编辑、会话恢复、GP8 输入/写回与 MIDI 导出。
+```text
+GP8 .gp 文件 → alphaTab 读取 → 浏览器渲染 → 本地播放
+```
 
-在 `TAB-101` 契约和 `TAB-201` alphaTab spike 完成前，不锁定 UI 框架或引入大规模组件库。
+当前包含：
+
+- React 19、TypeScript、Vite 和 pnpm workspace；
+- alphaTab 官方 Vite 插件，负责 Worker、AudioWorklet、Bravura 字体和 SoundFont 资源；
+- `.gp` 文件选择/拖放、大小与扩展名检查；
+- alphaTab 渲染容器、文件状态、播放/暂停和停止控制；
+- GP8 文件边界的基础单元测试。
+
+暂未包含 `CanonicalScore` 映射、页面编辑、持久化、GP8 写回和音频转录。
+
+## 本地运行
+
+在仓库根目录执行：
+
+```bash
+pnpm install
+pnpm dev
+```
+
+浏览器打开 Vite 输出的本地地址，然后选择一个由 Guitar Pro 8 保存的 `.gp` 文件。
+
+## 质量检查
+
+```bash
+pnpm check
+```
+
+该命令依次运行 ESLint、TypeScript、Vitest 和生产构建。

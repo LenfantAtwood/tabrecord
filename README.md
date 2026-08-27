@@ -2,7 +2,7 @@
 
 TabRecord 是一个面向吉他演奏者的实时 TAB 录制与编辑工具。它从麦克风获取演奏音频，可选地结合摄像头中的左手/指板位置先验，持续生成可修订的音符事件、六线谱和 MIDI，并读取或写回 Guitar Pro 8 文件。
 
-> 当前状态：产品与技术方案已建档，尚未进入功能实现。
+> 当前状态：前端工程已建立，正在验证 GP8 输入、alphaTab 渲染与本地播放闭环。
 
 ## 产品目标
 
@@ -41,7 +41,7 @@ GP8 是唯一 Guitar Pro 兼容目标。项目不为其他版本建立解析、�
 
 详见 [产品需求](docs/PRODUCT_REQUIREMENTS.md)、[系统架构](docs/ARCHITECTURE.md)、[研发工作流](docs/WORKFLOW.md)、[研究笔记](docs/RESEARCH.md) 和 [完整待办](docs/BACKLOG.md)。
 
-## 规划中的仓库结构
+## 仓库结构
 
 ```text
 apps/web/                 浏览器/PWA 界面、音视频采集、alphaTab 集成
@@ -50,6 +50,21 @@ services/transcription/   Python 基线、模型实验与可选本地推理服�
 experiments/              可复现实验配置与结果摘要（不提交大数据/权重）
 fixtures/                 小型、可再分发的黄金测试样例说明
 docs/                     PRD、架构、工作流、研究、ADR 与 backlog
+```
+
+## 启动前端
+
+需要 Node.js 22 或更新版本，以及 pnpm 11：
+
+```bash
+pnpm install
+pnpm dev
+```
+
+当前页面只接受由 Guitar Pro 8 保存的 `.gp` 文件。文件在浏览器本地读取，不会上传。运行全部检查：
+
+```bash
+pnpm check
 ```
 
 ## 实验
