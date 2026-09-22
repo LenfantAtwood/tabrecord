@@ -13,7 +13,8 @@ export interface Gp8Input {
 }
 
 interface AlphaTabViewerProps {
-  file: Gp8Input;
+  file?: Gp8Input;
+  tex?: string;
   onApiReady: (api: alphaTab.AlphaTabApi | null) => void;
   onError: (message: string) => void;
   onRenderFinished: () => void;
@@ -27,6 +28,7 @@ function getErrorMessage(error: unknown): string {
 
 export function AlphaTabViewer({
   file,
+  tex,
   onApiReady,
   onError,
   onRenderFinished,
@@ -85,6 +87,11 @@ export function AlphaTabViewer({
     }
 
     try {
+      if (tex !== undefined) {
+        api.tex(tex);
+        return;
+      }
+      if (!file) return;
       const accepted = api.load(file.buffer.slice(0));
 
       if (!accepted) {
@@ -93,7 +100,7 @@ export function AlphaTabViewer({
     } catch (error) {
       onError(getErrorMessage(error));
     }
-  }, [file, onError]);
+  }, [file, tex, onError]);
 
   return (
     <div className="score-viewport" ref={viewportRef}>

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tabrecord.local/schemas/monophonic-session-v1.json",
+  "title": "TabRecord experimental monophonic session v1",
+  "description": "Fixed standard tuning, 4/4, integer BPM, 480 PPQ; string 1 = high E. The runtime validator additionally enforces pitch/fret equality, unique IDs, chronological order and non-overlapping quantized notes.",
+  "type": "object",
+  "required": ["schemaVersion", "title", "bpm", "timeSignature", "ppq", "tuning", "maxFrets", "capo", "durationSeconds", "notes", "edits"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "title": { "type": "string", "maxLength": 200 },
+    "bpm": { "type": "integer", "minimum": 40, "maximum": 240 },
+    "timeSignature": { "const": [4, 4] },
+    "ppq": { "const": 480 },
+    "tuning": { "const": [64, 59, 55, 50, 45, 40] },
+    "maxFrets": { "const": 24 },
+    "capo": { "const": 0 },
+    "durationSeconds": { "type": "number", "minimum": 0, "maximum": 120 },
+    "notes": {
+      "type": "array", "maxItems": 4000, "items": { "$ref": "#/$defs/note" }
+    },
+    "edits": {
+      "type": "array", "maxItems": 20000,
+      "items": {
+        "type": "object", "required": ["noteId", "from", "to"],
+        "properties": {
+          "noteId": { "type": "string", "minLength": 1, "maxLength": 100 },
+          "from": { "$ref": "#/$defs/position" },
+          "to": { "$ref": "#/$defs/position" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "object", "required": ["string", "fret"],
+      "properties": {
+        "string": { "type": "integer", "minimum": 1, "maximum": 6 },
+        "fret": { "type": "integer", "minimum": 0, "maximum": 24 }
+      }
+    },
+    "note": {
+      "type": "object",
+      "required": ["id", "startSeconds", "endSeconds", "midi", "velocity", "confidence", "startTick", "durationTicks", "tab", "alternatives", "state", "source"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "startSeconds": { "type": "number", "minimum": 0, "maximum": 120 },
+        "endSeconds": { "type": "number", "exclusiveMinimum": 0, "maximum": 120 },
+        "midi": { "type": "integer", "minimum": 40, "maximum": 88 },
+        "velocity": { "type": "integer", "minimum": 1, "maximum": 127 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "startTick": { "type": "integer", "minimum": 0, "maximum": 1000000, "multipleOf": 120 },
+        "durationTicks": { "type": "integer", "minimum": 120, "maximum": 1000000, "multipleOf": 120 },
+        "tab": { "$ref": "#/$defs/position" },
+        "alternatives": { "type": "array", "minItems": 1, "maxItems": 6, "items": { "$ref": "#/$defs/position" } },
+        "state": { "enum": ["provisional", "committed", "locked"] },
+        "source": { "const": "audio" }
+      }
+    }
+  }
+}
