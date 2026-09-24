@@ -1,0 +1,207 @@
+{
+  "experiment": "TAB-407 synthetic-monophonic-v1",
+  "generatedAtUtc": "2026-09-22T03:44:13.334Z",
+  "revision": {
+    "head": "6dd41e58063f0d2492f97e71e9776bc5ac033b74",
+    "sourceWorkingTreeStatus": "?? apps/web/src/features/audio/transcription.ts",
+    "transcriptionSourceSha256": "44a4fc012931842f2e07c7a52453a697775a6bca9ec3082973681043bb11c0a8",
+    "scriptSha256": "e74f560d5692f21c79d2089ec2bd3928a0323a22118d3ba23bf21594e1ab35ab",
+    "lockfileSha256": "8de6afa964cf7c564269fb5841acc2f54b6e89c4be2bba4c230fbe0ab2b54205"
+  },
+  "environment": {
+    "node": "v24.19.0",
+    "os": "Darwin",
+    "release": "24.2.0",
+    "arch": "arm64",
+    "cpu": "Apple M1"
+  },
+  "config": {
+    "sourceSampleRate": 48000,
+    "analysisSampleRate": 12000,
+    "hopSeconds": 0.01,
+    "windowSeconds": 0.064,
+    "minMidi": 40,
+    "maxMidi": 88,
+    "minNoteDurationSeconds": 0.08,
+    "maxDurationSeconds": 120,
+    "noiseSeed": 407,
+    "benchmarkWarmups": 1,
+    "benchmarkTrials": 7,
+    "quantileMethod": "nearest rank; seven-trial p95 is the maximum, not a latency guarantee"
+  },
+  "fixtures": {
+    "melody": {
+      "pcmFloat32Sha256": "6fe5a4b031239ab8d02655f984db34904b45f1fe505a2ba8bc273a60282dfbda",
+      "expectedCount": 8,
+      "detectedCount": 8,
+      "correctPitchCount": 8,
+      "toleranceSeconds": 0.04,
+      "onsetErrorsSeconds": [
+        0,
+        0,
+        0,
+        1.1102230246251565e-16,
+        0,
+        0,
+        2.220446049250313e-16,
+        0
+      ],
+      "offsetErrorsSeconds": [
+        0,
+        2.7755575615628914e-17,
+        -2.7755575615628914e-17,
+        -2.7755575615628914e-17,
+        -2.7755575615628914e-17,
+        -2.7755575615628914e-17,
+        -2.7755575615628914e-17,
+        -2.7755575615628914e-17
+      ],
+      "pass": true,
+      "notes": [
+        {
+          "startSeconds": 0,
+          "endSeconds": 0.23,
+          "midi": 40,
+          "confidence": 0.9782359403355921,
+          "velocity": 127
+        },
+        {
+          "startSeconds": 0.3,
+          "endSeconds": 0.53,
+          "midi": 45,
+          "confidence": 0.9744025362350376,
+          "velocity": 127
+        },
+        {
+          "startSeconds": 0.6,
+          "endSeconds": 0.83,
+          "midi": 50,
+          "confidence": 0.9813197531695951,
+          "velocity": 123
+        },
+        {
+          "startSeconds": 0.9,
+          "endSeconds": 1.13,
+          "midi": 55,
+          "confidence": 0.9866753631937023,
+          "velocity": 123
+        },
+        {
+          "startSeconds": 1.2,
+          "endSeconds": 1.43,
+          "midi": 59,
+          "confidence": 0.9906939793655559,
+          "velocity": 123
+        },
+        {
+          "startSeconds": 1.5,
+          "endSeconds": 1.73,
+          "midi": 64,
+          "confidence": 0.994184720811042,
+          "velocity": 121
+        },
+        {
+          "startSeconds": 1.8,
+          "endSeconds": 2.03,
+          "midi": 76,
+          "confidence": 0.9969642063367486,
+          "velocity": 123
+        },
+        {
+          "startSeconds": 2.1,
+          "endSeconds": 2.33,
+          "midi": 88,
+          "confidence": 0.9958193925405319,
+          "velocity": 121
+        }
+      ]
+    },
+    "repeated": {
+      "pcmFloat32Sha256": "0dbf1d36eddecf63074aa6bc11723d0c1edcfe995ed4de12a434278914ca55f2",
+      "expectedCount": 3,
+      "detectedCount": 3,
+      "correctPitchCount": 3,
+      "toleranceSeconds": 0.04,
+      "onsetErrorsSeconds": [
+        0,
+        0,
+        0
+      ],
+      "offsetErrorsSeconds": [
+        5.551115123125783e-17,
+        0,
+        5.551115123125783e-17
+      ],
+      "pass": true,
+      "notes": [
+        {
+          "startSeconds": 0.1,
+          "endSeconds": 0.4,
+          "midi": 57,
+          "confidence": 0.9914182027559917,
+          "velocity": 127
+        },
+        {
+          "startSeconds": 0.43,
+          "endSeconds": 0.73,
+          "midi": 57,
+          "confidence": 0.9914182027559917,
+          "velocity": 127
+        },
+        {
+          "startSeconds": 0.76,
+          "endSeconds": 1.06,
+          "midi": 57,
+          "confidence": 0.9914182027559917,
+          "velocity": 127
+        }
+      ]
+    },
+    "silence": {
+      "pcmFloat32Sha256": "ea0787f65f73b0013d03b359490e3125211b28ad5c1502ffb1544c0ded4192f5",
+      "detectedCount": 0,
+      "pass": true
+    },
+    "noise": {
+      "pcmFloat32Sha256": "18adcaf433abc14e6bfbd00c6949a9d7aff68d26cf1ec8a2e7f6acef3b2f8647",
+      "detectedCount": 0,
+      "pass": true
+    }
+  },
+  "benchmarks": [
+    {
+      "durationSeconds": 2,
+      "pcmFloat32Sha256": "38bde06c2dc8c467612698019a5294f018d39f5e3493b568767873b7ae135789",
+      "runsMs": [
+        18.52,
+        18.46,
+        18.41,
+        18.37,
+        18.39,
+        18.43,
+        18.88
+      ],
+      "p50Ms": 18.43,
+      "p95Ms": 18.88,
+      "detectedCount": 1,
+      "pass": true
+    },
+    {
+      "durationSeconds": 120,
+      "pcmFloat32Sha256": "0e570df59ef9b164e1397e54f5b8abc8d0ad81ab80240552bbda38394037ab31",
+      "runsMs": [
+        1181.35,
+        1131.8,
+        1120.68,
+        1125.99,
+        1113.49,
+        1112.12,
+        1102.24
+      ],
+      "p50Ms": 1120.68,
+      "p95Ms": 1181.35,
+      "detectedCount": 1,
+      "pass": true
+    }
+  ]
+}
