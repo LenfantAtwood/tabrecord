@@ -13,6 +13,7 @@ import type {
   Gp8Input,
   ImportedScoreSummary,
 } from './components/AlphaTabViewer';
+import { AudioWorkspace } from './components/AudioWorkspace';
 import { formatFileSize, getGp8FileError } from './features/gp8/gp8File';
 
 const AlphaTabViewer = lazy(async () => {
@@ -70,6 +71,7 @@ function StopIcon() {
 
 export function App() {
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const importGeneration = useRef(0);
   const [alphaTabApi, setAlphaTabApi] = useState<alphaTab.AlphaTabApi | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -78,6 +80,7 @@ export function App() {
   const [score, setScore] = useState<ImportedScoreSummary | null>(null);
 
   const importFile = useCallback(async (candidate: File) => {
+    const generation = ++importGeneration.current;
     const validationError = getGp8FileError(candidate);
 
     if (validationError) {
@@ -92,6 +95,7 @@ export function App() {
 
     try {
       const buffer = await candidate.arrayBuffer();
+      if (generation !== importGeneration.current) return;
       setFile({
         buffer,
         id: crypto.randomUUID(),
@@ -100,6 +104,7 @@ export function App() {
       });
       setPhase('rendering');
     } catch {
+      if (generation !== importGeneration.current) return;
       setErrorMessage('浏览器无法读取这个文件，请重新选择。');
       setPhase('error');
     }
@@ -143,6 +148,7 @@ export function App() {
   }, []);
 
   const showRecordingWorkspace = useCallback(() => {
+    importGeneration.current++;
     alphaTabApi?.stop();
     setErrorMessage(null);
     setFile(null);
@@ -174,7 +180,7 @@ export function App() {
             <p className="subtitle">
               {score
                 ? `${score.artist} · ${score.trackCount} 条轨道`
-                : '从麦克风捕捉吉他演奏，可选结合左手与指板位置，持续生成可修订的六线谱和 MIDI，确认后导出为 Guitar Pro 8 文件。'}
+                : '上传音频或使用麦克风，将吉他单音旋律转成可修正的六线谱与 MIDI。也可以导入 Guitar Pro 8 乐谱，继续查看与播放。'}
             </p>
           </div>
 
@@ -185,7 +191,7 @@ export function App() {
               onClick={showRecordingWorkspace}
             >
               <MicIcon />
-              开始新录制
+              音频转 TAB
             </button>
             <button
               className="secondary-button"
@@ -260,43 +266,7 @@ export function App() {
           </section>
         ) : (
           <section className="start-grid">
-            <article className="recording-card" id="live-session">
-              <div className="recording-header">
-                <span>01 / LIVE SESSION</span>
-                <span className="build-status">
-                  <span />
-                  音频采集 · 下一阶段
-                </span>
-              </div>
-              <div className="recording-body">
-                <div className="recording-copy">
-                  <p className="eyebrow">REAL-TIME WORKSPACE</p>
-                  <h2>从一次演奏开始</h2>
-                  <p>
-                    音频先成为带时间戳的音符候选，再结合调弦、可演奏性与可选手势先验，形成可人工修订的 TAB。
-                  </p>
-                  <div className="capability-list" aria-label="实时录制能力">
-                    <span>麦克风音频</span>
-                    <span>可选手势先验</span>
-                    <span>可修订音符事件</span>
-                  </div>
-                </div>
-
-                <div className="signal-panel" aria-label="录制模块开发状态">
-                  <div className="signal-bars" aria-hidden="true">
-                    {[18, 32, 22, 48, 64, 38, 74, 52, 30, 58, 42, 68, 36, 24, 46].map(
-                      (height, index) => <i key={index} style={{ height }} />,
-                    )}
-                  </div>
-                  <span className="signal-label">等待麦克风输入</span>
-                  <button className="recording-button" type="button" disabled>
-                    <MicIcon />
-                    录音入口正在接入
-                  </button>
-                  <small>当前迭代先完成 GP8 输入与页面模型底座</small>
-                </div>
-              </div>
-            </article>
+            <AudioWorkspace />
 
             <aside
               className={`import-card ${dragActive ? 'import-card-active' : ''}`}
@@ -336,15 +306,15 @@ export function App() {
         <section className="milestone-strip" aria-label="当前里程碑">
           <div>
             <span>01</span>
-            <p><strong>当前底座</strong>GP8 输入与渲染</p>
+            <p><strong>乐谱输入</strong>GP8 渲染与播放</p>
           </div>
           <div>
             <span>02</span>
-            <p><strong>下一阶段</strong>麦克风与音符事件</p>
+            <p><strong>本地实验</strong>音频转 TAB 与 MIDI</p>
           </div>
           <div>
             <span>03</span>
-            <p><strong>产品目标</strong>实时 TAB、MIDI 与 GP8</p>
+            <p><strong>产品目标</strong>和弦识别与 GP8 写回</p>
           </div>
         </section>
       </main>
